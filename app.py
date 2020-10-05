@@ -33,7 +33,7 @@ def load_description(df):
 
     st.header("EDA (Exploratory Data Analysis) ")
     # Preview of the dataset
-    preview = st.radio("Choose Head/Tail?", ("Top", "Bottom"))
+    preview = st.radio("Choose one", ("Top", "Bottom"))
     if(preview == "Top"):
         st.write(df.head())
     if(preview == "Bottom"):
@@ -56,10 +56,15 @@ def load_description(df):
     if(st.checkbox("Show the Columns")):
         st.write(df.columns)
 
+    if(st.checkbox('Counts of Unique values')):
+        st.write(df.label.value_counts())
+
     # show info    
     if(st.checkbox("Show the Data Description")):
         st.write(df.describe(include='all'))
-        
+    
+    if(st.checkbox('Describe using Group Labels')):
+        st.write(df.groupby('label').describe())
 
 def graph(df):
     st.subheader("Graphs of Target column :")
@@ -135,34 +140,12 @@ def word_cloud(df):
         df_ham = df.loc[df['target']=='ham', :]
         st.write(df_ham.head())
         if (path.exists("wc_ham.png")):
-            st.image("wc_ham.png", use_column_width = True)
-         # else:
-         #     cleaned_ham = cleaned(df_ham)
-
-         #     wordcloud_ham = WordCloud(
-         #               background_color='black',
-         #               width=1600,
-         #               height=800
-         #              ).generate(cleaned_ham)
-         #     wordcloud_ham.to_file("wc_ham.png")
-         #     st.image("wc_ham.png", use_column_width = True)
-
+            pass
     if(dim == "Spam"):
         df_spam = df.loc[df['target']=='spam', :]
         st.write(df_spam.head())
         if (path.exists("wc_spam.png")):
             st.image("wc_spam.png", use_column_width = True)
-         # else:
-         #     cleaned_spam = cleaned(df_spam)
-
-         #     wordcloud_spam = WordCloud(
-         #               background_color='black',
-         #               width=1600,
-         #               height=800
-         #              ).generate(cleaned_spam)
-         #     wordcloud_spam.to_file("wc_spam.png")
-         #     st.image("wc_spam.png", use_column_width = True)
-
 
 def preprocess(raw_msg):
 
@@ -216,6 +199,7 @@ def predict(msg):
 
 def test():
     st.header("Prediction")
+    st.sidebar.subheader("Spam ham Predictor") # Changed this line
     msg = st.text_input('Enter your Message : ')
 
     prediction = predict(msg)
